@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<p>选择排序</p>
+		<script type="text/javascript">
+			var arr = [9, 3, 4, 3, 1];
+			function selectSort (arr) {
+				var len = arr.length;
+				var minIndex;
+				var temp;
+				for (var i = 0; i < len - 1; i++) {
+					minIndex = i;
+					for (var j = i + 1; j < len; j++) {
+						if (arr[i] > arr[j]) {
+							minIndex = j;
+						}
+					}
+					temp = arr[i];
+					arr[i] = arr[minIndex];
+					arr[minIndex] = temp;
+				}
+				return arr;
+			}
+			console.log(selectSort(arr));
+		</script>
+	</body>
+</html>

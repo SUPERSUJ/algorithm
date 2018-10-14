@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<p>将所有的列信息转换成表头的行信息</p>
+		<script type="text/javascript">
+			// 数列铺平
+			const getAllColumns = (columns) => {
+				const result = [];
+				columns.forEach((column) => {
+					if (column.children) {
+						result.push(column);
+						result.push.apply(result, getAllColumns(column.children));
+					} else {
+						result.push(column);
+					}
+				});
+				return result;
+			};
+			
+			const covertToRows = (originColumns) => {
+				// 最大层级
+				let maxLevel = 1;
+				// 遍历列来判断表头每个单元格需要占多少格(水平方向)
+				const traverse = (column, parent) => {
+					if (parent) {
+						column.level = parent.level + 1;
+						if (maxLevel < column.level) {
+							maxLevel = column.level;
+						}
+					}
+					if (column.children) {
+						let colSpan = 0;
+						column.children.forEach((subColumn) => {
+							traverse(subColumn, column);
+							colSpan += subColumn.colSpan;
+						});
+						column.colSpan = colSpan;
+					} else {
+						column.colSpan = 1;
+					}
+				};
+				
+				// 获取每一列的层级
+				originColumns.forEach((column) => {
+					column.level = 1;
+					traverse(column);
+				});
+				
+				const rows = [];
+				for (let i = 0; i < maxLevel; i++) {
+					rows.push([]);
+				}
+				
+				const allColumns = getAllColumns(originColumns);
+				
+				allColumns.forEach((column) => {
+					if (!column.children) {
+						column.rowSpan = maxLevel - column.level + 1; // rowSpan(垂直方向)
+					} else {
+						column.rowSpan = 1;
+					}
+					rows[column.level - 1].push(column);
+				});
+				
+				return rows;
+			}
+			
+			
+			let arr = [
+				{
+					name: '1',
+					children: [
+						{
+							name: '1-1',
+							children: [
+								{
+									name: '1-1-1',
+								}
+							],
+						}
+					],
+				},
+				{
+					name: '2',
+					children: [
+						{
+							name: '2-1',
+						}
+					],
+				},
+			];
+			console.log('ret: ', covertToRows(arr));
+		</script>
+	</body>
+</html>

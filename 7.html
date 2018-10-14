@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<p>插入排序</p>
+		<script type="text/javascript">
+			var arr = [9, 3, 4, 3, 1];
+			function insertSort (arr) {
+				var len = arr.length;
+				var preIndex;
+				var curr;
+				for (var i = 1; i < len; i++) {
+					preIndex = i - 1;
+					curr = arr[i];
+					while(preIndex >= 0 && arr[preIndex] > curr) {
+						arr[preIndex + 1] = arr[preIndex];
+						preIndex--;
+					}
+					arr[preIndex + 1] = curr;
+				}
+				return arr;
+			}
+			console.log(insertSort(arr));
+		</script>
+	</body>
+</html>

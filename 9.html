@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<p>快速排序</p>
+		<script type="text/javascript">
+			var arr = [9, 3, 4, 3, 1];
+			function quickSort(arr, left, right) {
+				var len = arr.length;
+				var partitionIndex;
+				left = typeof left != 'number' ? 0 : left;
+				right = typeof right != 'number' ? len - 1 : right;
+				
+				if (left < right) {
+					partitionIndex = partition(arr, left, right);
+					quickSort(arr, left, partitionIndex - 1);
+					quickSort(arr, partitionIndex + 1, right);
+				}
+				return arr;
+			}
+			
+			function partition(arr, left, right) {
+				var pivot = left;
+				var index = pivot + 1;
+				for (var i = index; i <= right; i++) {
+					if (arr[i] < arr[pivot]) {
+						var temp = arr[i];
+						arr[i] = arr[index];
+						arr[index] = temp;
+						index++;
+					}
+				}
+				var temp = arr[pivot];
+				arr[pivot] = arr[index - 1];
+				arr[index - 1] = temp;
+				return index - 1;
+			}
+			
+			console.log(quickSort(arr));
+		</script>
+	</body>
+</html>

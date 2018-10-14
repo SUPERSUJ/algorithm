@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<p>判断是不是质数</p>
+		<script type="text/javascript">
+			function isPrime (n) {
+				if (n < 2) {
+					return false;
+				}
+				
+				var q = Math.floor(Math.sqrt(n));
+				for (var i = 2; i <= q; i++) {
+					if (n % i === 0) {
+						return false;
+					}
+				}
+				return true;
+			}
+			
+			console.log(isPrime(3));
+		</script>
+	</body>
+</html>

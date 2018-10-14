@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<p>求0 ~ 100 的质数</p>
+		<script type="text/javascript">
+			function getPrimes (max) {
+				var sieve = [];
+				var primes = [];
+				var i;
+				var j;
+				for (i = 2; i <= max; i++) {
+					if (!sieve[i]) {
+						primes.push(i);
+						for (j = i << 1; j <= max; j += i) {
+							sieve[j] = true;
+						}
+					}
+				}
+				return primes;
+			}
+			
+			console.log(getPrimes(100))
+		</script>
+	</body>
+</html>
