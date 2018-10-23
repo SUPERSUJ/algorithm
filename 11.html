@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<p>Sort JavaScript object by key</p>
+		<script type="text/javascript">
+			var obj = {
+				z: 1,
+				e: 3,
+				a: 4,
+				b: 5
+			};
+			
+			Object.keys(obj)
+				.sort((a, b) => a < b ? -1 : 1)
+				.forEach((key) => {
+					console.log(key, obj[key]);
+				});
+		</script>
+	</body>
+</html>
