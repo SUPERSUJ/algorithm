@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<p>AOP</p>
+		<script type="text/javascript">
+			Function.prototype.before = function(beforeFn) {
+        var _self = this;
+        return function() {
+          beforeFn.apply(_self, arguments);
+          return _self.apply(this, arguments);
+        };
+      }
+
+      Function.prototype.after = function(afterFn) {
+        var _self = this;
+        return function() {
+          var ret = _self.apply(this, arguments);
+          afterFn.apply(this, arguments);
+          return ret;
+        }
+      }
+
+      var fn = function() {
+        console.log(2);
+      }
+      var fn2 = fn.before(function() {
+        console.log(1);
+      }).after(function() {
+        console.log(3);
+      });
+      fn2();
+		</script>
+	</body>
+</html>
