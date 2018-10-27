@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+
+<body>
+  <p>二叉搜索树</p>
+  <script type="text/javascript">
+    function Node(value) {
+      this.value = value;
+      this.left = null;
+      this.right = null;
+    }
+    function BinarySearchTree() {
+      this.root = null;
+    }
+    BinarySearchTree.prototype.push = function (value) {
+      var root = this.root;
+
+      if (!root) {
+        this.root = new Node(value);
+        return;
+      }
+
+      var currentNode = root;
+      var newNode = new Node(value);
+
+      while (currentNode) {
+        if (value < currentNode.value) {
+          if (!currentNode.left) {
+            currentNode.left = newNode;
+            break;
+          }
+          else {
+            currentNode = currentNode.left;
+          }
+        }
+        else {
+          if (!currentNode.right) {
+            currentNode.right = newNode;
+            break;
+          }
+          else {
+            currentNode = currentNode.right;
+          }
+        }
+      }
+
+    }
+    var bst = new BinarySearchTree();
+    bst.push(50);
+    bst.push(2);
+    bst.push(80);
+    bst.push(81);
+    bst.push(79);
+    bst.push(1);
+    console.log(bst);
+
+    function dfs(node) {
+      if (node) {
+        console.log(node.value);
+        dfs(node.left);
+        dfs(node.right);
+      }
+    }
+    console.log('==== 深度遍历 ====');
+    dfs(bst.root);
+
+    function inorder(node) {
+      if (node) {
+        inorder(node.left); // 左边执行完
+        console.log(node.value); // 再执行自己
+        inorder(node.right);
+      }
+    }
+
+    console.log('==== 按顺序遍历 ====');
+    inorder(bst.root);
+
+    function minNode(node) {
+      if (!node) {
+        return 0;
+      }
+      if (node.left) {
+        return minNode(node.left);
+      }
+      return node.value;
+    }
+    console.log('==== 最小值 ====');
+    console.log(minNode(bst.root));
+
+    function maxNode(node) {
+      if (!node) {
+        return 0;
+      }
+      if (node.right) {
+        return maxNode(node.right);
+      }
+      return node.value;
+    }
+    console.log('==== 最大值 ====');
+    console.log(maxNode(bst.root));
+
+    function height(node) {
+      if (!node) return 0;
+      var leftHeight = height(node.left);
+      var rightHeight = height(node.right);
+      return Math.max(leftHeight, rightHeight) + 1;
+    }
+    console.log('==== 树高度 ====');
+    console.log(height(bst.root));
+
+    function binaryTreePaths(root) {
+      var paths = [];
+      if (!root) return [];
+      if (root.left == null && root.right == null) {
+        if (paths.length == 0) return ["" + root.value];
+        else return root.value;
+      }
+      else {
+        if (root.left)
+          binaryTreePaths(root.left).forEach(function (lp) {
+            paths.push(root.value + "->" + lp);
+          });
+        if (root.right)
+          binaryTreePaths(root.right).forEach(function (rp) {
+            paths.push(root.value + "->" + rp);
+          });
+      }
+      return paths;
+    };
+    console.log('==== root到子的所有路径 ====');
+    console.log(binaryTreePaths(bst.root));
+
+  </script>
+</body>
+
+</html>
