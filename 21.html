@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+    <span style="font-size: 18px; font-family: Arial;">在javascript中以像素为单位测量字符串的长度</span>
+    <script type="text/javascript">
+      var canvas = document.createElement('canvas');
+      var ctx = canvas.getContext("2d");
+      ctx.font = "18px Arial";
+      var width = ctx.measureText('在javascript中以像素为单位测量字符串的长度').width;
+      console.log(width);
+    </script>
+	</body>
+</html>
