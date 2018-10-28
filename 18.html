@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+    <p>函数防抖</p>
+    <button id="btn">点击触发</button>
+		<script type="text/javascript">
+			var debounce = function(fn, wait) {
+        var timer = null;
+        return function() {
+          console.log(new Date());
+          var context = this;
+          var args = arguments;
+          if (timer) {
+            clearTimeout(timer);
+            timer = null;
+          }
+          timer = setTimeout(function() {
+            fn.apply(context, args);
+          }, wait);
+        }
+      }
+
+      document.getElementById('btn').onclick = debounce(function() {
+        console.log(1);
+        console.log(new Date());
+      }, 2000);
+		</script>
+	</body>
+</html>
