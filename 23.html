@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+
+<body style="height: 1500px; overflow: scroll;">
+  <span>监听滚动结束</span>
+  <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      var timer = null;
+      $(window).scroll(function () { // 滚动条属于window， 不是body
+        console.log('正在滚动');
+        if (timer !== null) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(function () {
+          console.log('滚动结束');
+        }, 150);
+      });
+    });
+  </script>
+</body>
+
+</html>
