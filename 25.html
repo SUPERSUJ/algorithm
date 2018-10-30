@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+    <span>数组中找到所有的三个数集合的和等于特定的数</span>
+    <script type="text/javascript">
+      var specialNum = 0;
+      function findNumber(arr) {
+        var newArr = arr.sort((a, b) => a - b);
+        var len = newArr.length;
+        var a;
+        var start;
+        var end;
+        var b;
+        var c;
+        for (var i = 0; i <= len - 3; i++) {
+          a = newArr[i];
+          start = i + 1;
+          end = len - 1;
+          while(start < end) {
+            b = newArr[start];
+            c = newArr[end];
+            if (a + b + c === specialNum) {
+              console.log(a, b, c);
+              end--;
+            } else if (a + b + c > specialNum) {
+              end--;
+            } else {
+              start++;
+            }
+          }
+        }
+      }
+      console.log(findNumber([2, 3, 1, 0, -3, -1, -2]));
+    </script>
+	</body>
+</html>
