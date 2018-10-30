@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+
+<body>
+  <span>数组中找到所有的两个数集合的和等于特定的数</span>
+  <script type="text/javascript">
+    const arr = [7, 0, -4, 5, 2, 3];
+    const twoSum = (arr, target) => {
+      let map = {},
+        results = [];
+
+      for (let i = 0; i < arr.length; i++) {
+        if (map[arr[i]]) {                           // straight check
+          results.push([target - arr[i], arr[i]]); // take delta
+          continue;
+        }
+        map[target - arr[i]] = true;
+      }
+      return results;
+    };
+    console.log('twoSum = ', twoSum(arr, 5));
+  </script>
+</body>
+
+</html>
