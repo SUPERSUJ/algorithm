@@ -22,3 +22,7 @@ var util = {
     return !isNaN(parseFloat(n)) && isFinite(n);
   },
 };
+var countDecimals = function () {
+  if(Math.floor(this.valueOf()) === this.valueOf()) return 0;
+  return this.toString().split(".")[1].length || 0; 
+}
