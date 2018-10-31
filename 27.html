@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+
+<body>
+  <span>一个数组，把奇数放到右边，偶数放到左边，不能使用额外空间</span>
+  <script type="text/javascript">
+    var arr = [7, 0, -4, 5, 2, 3];
+
+    // function swap(arr, i, j) {
+    //   arr[i] ^= arr[j];
+    //   arr[j] ^= arr[i];
+    //   arr[i] ^= arr[j];
+    // }
+    // function sort(arr) {
+    //   for (var i = arr.length - 1; i > 0; i--) {
+    //     for (var j = 0; j < i; j++) {
+    //       if (arr[i] & 1) {
+    //         swap(arr, i, j);
+    //       }
+    //     }
+    //   }
+    //   return arr;
+    // }
+    // console.log('sort = ', sort(arr));
+
+    arr = arr.sort(function(a, b) {
+      console.log(a, b)
+      return a % 2 - b % 2
+    });
+    console.log('sort = ', arr);
+  </script>
+</body>
+
+</html>

@@ -34,3 +34,14 @@ function countDecimals(n) {
   };
   return n.toString().split(".")[1].length || 0;
 }
+
+// 判断是不是日期
+function isDate(str) {
+  var dateArr = str.split('-').map(function(val, i, arr) {
+    return parseInt(val, 10);
+  });
+  var date = new Date(dateArr[0], dateArr[1] - 1, dateArr[2]);
+  return date.getFullYear() === dateArr[0]
+    && (date.getMonth() + 1) === dateArr[1]
+    && date.getDate() === dateArr[2];
+}
