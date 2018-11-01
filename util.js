@@ -45,3 +45,19 @@ function isDate(str) {
     && (date.getMonth() + 1) === dateArr[1]
     && date.getDate() === dateArr[2];
 }
+
+// 判断整数
+// function isInt(n) {
+//   return n % 1 === 0;
+// }
+// function isInt (n) {
+//   return Number.isInteger(n) || (function (value) {
+//     return typeof value === 'number'
+//       && isFinite(value)
+//       && Math.floor(value) === value
+//   })(n);
+// }
+function isInt(value) {
+  var er = /^-?[0-9]+$/;
+  return er.test(value);
+}
