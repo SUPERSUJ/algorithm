@@ -27,12 +27,12 @@ function isNumber (n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-// 判断小数点后几位
+// 判断小数点后几位，n必须number类型，不能是string，因为string的valueOf方法返回字符串
 function countDecimals(n) {
   if (Math.floor(n) === n.valueOf()) {
-    return 0
-  };
-  return n.toString().split(".")[1].length || 0;
+    return 0;
+  }
+  return n.toString().split(".")[1].length;
 }
 
 // 判断是不是日期
