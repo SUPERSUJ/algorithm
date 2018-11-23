@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+
+	<body>
+		<p>判断是不是数字</p>
+		<script type="text/javascript">
+			function isNumeric(n) {
+				return !isNaN(parseFloat(n)) && isFinite(n);
+			}
+			console.log(isNumeric('0.01'));
+			console.log(isNumeric('.1'));
+			console.log(isNumeric('1'));
+			console.log(isNumeric('a'));
+			console.log(isNumeric('.a'));
+			console.log(isNumeric('.001a'));
+			console.log(isNumeric('1a'));
+			console.log(isNumeric(''));
+			console.log(isNumeric('.0'));
+		</script>
+	</body>
+
+</html>

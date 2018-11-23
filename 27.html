@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+
+	<body>
+		<p>检查数字范围有没有重叠</p>
+		<script type="text/javascript">
+			var kt = [{
+				min: 0,
+				max: 33
+			}, {
+				min: 31,
+				max: 66
+			}, {
+				min: 66,
+				max: 100
+			}];
+
+			function checkRangeOverlap(ranges, minKey = 'min', maxKey = 'max') {
+				let n = ranges.length;
+
+				for(let i = 0; i < n; i++) {
+					for(let u = 0; u < n; u++) {
+						if(i === u) {
+							continue;
+						}
+						let rangeA = ranges[i];
+						let rangeB = ranges[u];
+
+						if(rangeA[minKey] < rangeB[maxKey] && rangeA[maxKey] > rangeB[minKey]) {
+							return false;
+						}
+					}
+				}
+
+				return true;
+			}
+			console.log(checkRangeOverlap(kt));
+		</script>
+	</body>
+
+</html>
