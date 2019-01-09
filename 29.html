@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+
+<body>
+  <span>util</span>
+  <script type="text/javascript">
+  let util = {
+    // 深复制
+    deepCopy(obj) {
+      if (obj === null || !this.isObject(obj)) {
+        return obj;
+      }
+
+      let tmp = obj.constructor();
+      for (let key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          tmp[key] = this.deepCopy(obj[key]);
+        }
+      }
+
+      return tmp;
+    },
+
+    // 格式化日期
+    formatDate(date, fmt) {
+      if (!(date instanceof Date)) {
+        date = new Date(date);
+      }
+
+      if (/(y+)/.test(fmt)) {
+        fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
+      }
+      let o = {
+        'M+': date.getMonth() + 1,
+        'd+': date.getDate(),
+        'h+': date.getHours(),
+        'm+': date.getMinutes(),
+        's+': date.getSeconds(),
+      };
+      for (let k in o) {
+        if (new RegExp(`(${k})`).test(fmt)) {
+          let str = o[k] + '';
+          fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? str : this.padLeftZero(str));
+        }
+      }
+      return fmt;
+    },
+
+    // 字符串左边添加零
+    padLeftZero(str) {
+      return ('00' + str).substr(str.length);
+    },
+
+    // 获取类型
+    getType(obj) {
+      return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase();
+    },
+
+    // 判断类型
+    isType(obj, type) {
+      if (this.getType(type) !== 'string') {
+        throw new Error('type param must be string in util.js');
+      }
+
+      return this.getType(obj) === type;
+    },
+
+    // 是否是对象
+    isObject(val) {
+      if (val === null) {
+        return false;
+      }
+      return (typeof val === 'function') || (typeof val === 'object');
+    },
+
+    // 是否是数组
+    isArray(arr) {
+      return this.isType(arr, 'array');
+    },
+
+    // 是否是字符串
+    isString(str) {
+      return this.isType(str, 'string');
+    },
+
+    // 是否是Error
+    isError(err) {
+      return this.isType(err, 'error');
+    },
+
+    // 是否是undefined
+    isUndefined(val) {
+      return this.isType(val, 'undefined');
+    },
+
+    // 是否是number
+    isNumber(val) {
+      return this.isType(val, 'number');
+    },
+
+    // 对象属性转为驼峰
+    transformKeyHump(obj) {
+      let newObj = {};
+
+      Object.keys(obj).forEach(key => {
+        let newKey = key.replace(DOWNLINEREG, ($0, $1) => $1.toUpperCase());
+        newObj[newKey] = obj[key];
+      });
+
+      return newObj;
+    },
+
+    // 从旧对象获取相应的属性值，组成新对象
+    getNewObj(keyArr, obj) {
+      if (!this.isArray(keyArr)) {
+        throw new Error('keyArr param must be Object in util.js');
+      }
+
+      if (!this.isObject(obj) || obj === null) {
+        throw new Error('obj param must be Object in util.js');
+      }
+
+      let objOfHump = this.transformKeyHump(obj);
+      let newObj = {};
+
+      keyArr.forEach((key) => {
+        if (objOfHump.hasOwnProperty(key)) {
+          newObj[key] = objOfHump[key];
+        }
+      });
+
+      return newObj;
+    },
+
+    // 快速清空数组
+    emptyArr(arr) {
+      while (arr.length) {
+        arr.pop();
+      }
+    },
+
+    // 判断是否是整数
+    isInteger(num) {
+      return num % 1 === 0;
+    },
+
+    // 判断是不是数字
+    isNumeric(n) {
+      return !isNaN(parseFloat(n)) && isFinite(n);
+    },
+
+    // 判断小数是几位
+    countDecimals(n) {
+      if (!this.isNumber(n)) {
+        n = parseFloat(n);
+      }
+      if (Math.floor(n) === n.valueOf()) {
+        return 0;
+      }
+      return n.toString().split('.')[1].length;
+    },
+
+    // 修复toFixed
+    toFixed(n, s) {
+      let changenum = (parseInt(n * Math.pow(10, s) + 0.5, 10) / Math.pow(10, s)).toString();
+      let index = changenum.indexOf('.');
+      if (index < 0 && s > 0) {
+        changenum += '.';
+        for (let i = 0; i < s; i++) {
+          changenum += '0';
+        }
+      } else {
+        index = changenum.length - index;
+        for (let i = 0; i < (s - index) + 1; i++) {
+          changenum += '0';
+        }
+      }
+      return changenum;
+    },
+
+    // 是否相等
+    isEqual(a, b) {
+      let aProps = Object.getOwnPropertyNames(a);
+      let bProps = Object.getOwnPropertyNames(b);
+
+      if (aProps.length !== bProps.length) {
+        return false;
+      }
+
+      for (let i = 0, len = aProps.length; i < len; i++) {
+        let propName = aProps[i];
+        if (a[propName] !== b[propName]) {
+          return false;
+        }
+      }
+
+      return true;
+    },
+    checkRangeOverlap(ranges, minKey = 'min', maxKey = 'max') {
+      let n = ranges.length;
+      for (let i = 0; i < n; i++) {
+        for (let u = 0; u < n; u++) {
+          if (i === u) {
+            continue;
+          }
+          let rangeA = ranges[i];
+          let rangeB = ranges[u];
+          if (rangeA[minKey] < rangeB[maxKey] && rangeA[maxKey] > rangeB[minKey]) {
+            return false;
+          }
+        }
+      }
+      return true;
+    },
+    // 是否包含中文
+    hasChinese(str) {
+      return CHINESE.test(str);
+    },
+    hasSpace(str) {
+      return SPACE.test(str);
+    },
+    moneyFormat(n) {
+      let isStr = this.isString(n);
+      let isNum = this.isNumeric(n);
+      if (!isStr && !isNum) {
+        return '';
+      }
+      if (this.isString(n)) {
+        n = parseFloat(n);
+      }
+      if (Number.prototype.hasOwnProperty('toLocaleString')) {
+        return n.toLocaleString();
+      }
+      return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    },
+    getDate(str) {
+      let ret = /(\d+)-(\d+)-(\d+)/.exec(str);
+      return new Date(ret[1], ret[2] - 1, ret[3]);
+    },
+    getYMD(str) {
+      let ret = /(\d+)-(\d+)-(\d+)/.exec(str);
+      return ret[0];
+    },
+    // 允许两个时间相同
+    // 求两个时间范围内的所有时间字符串的集合
+    timeRangeAllDate(start, end) {
+      if (!(start instanceof Date) && this.isInteger(start)) { // start 为整数，就是表示start天前到今天的时间范围
+        let diffDay = start;
+        let currentTime = new Date();
+        let y = currentTime.getFullYear();
+        let m = currentTime.getMonth();
+        let d = currentTime.getDate();
+        if (diffDay < 0) {
+          end = new Date(y, m, d);
+          start = new Date(end.getTime() + (diffDay * 24 * 60 * 60 * 1000));
+        } else {
+          start = new Date(y, m, d);
+          end = new Date(start.getTime() + (diffDay * 24 * 60 * 60 * 1000));
+        }
+      } else {
+        if (!(start instanceof Date)) {
+        start = this.getDate(start);
+        } else {
+          start = this.timeFormat({
+            time: start,
+            type: 'YMD',
+            beforeSeparator: '-',
+          });
+          start = this.getDate(start);
+        }
+        if (!(end instanceof Date)) {
+          end = this.getDate(end);
+        } else {
+          end = this.timeFormat({
+            time: end,
+            type: 'YMD',
+            beforeSeparator: '-',
+          });
+          end = this.getDate(end);
+        }
+      }
+
+      let year = start.getFullYear();
+      let month = start.getMonth();
+      let day = start.getDate();
+      let dates = [start];
+      let dateMap = {}; // key 对应日期, value 对应日期在dataRet的索引
+      let dateStrs = [];
+
+      while (dates[dates.length - 1] < end) {
+        dates.push(new Date(year, month, ++day));
+      }
+      dates.forEach((item, index) => {
+        let dateStr = this.timeFormat({
+          time: item,
+          type: 'YMD',
+          beforeSeparator: '-',
+        });
+        dateStrs.push(dateStr);
+        dateMap[dateStr] = index;
+      });
+      dates.forEach((item) => { // eslint-disable-line
+        item = null;
+      });
+      dates = null;
+      console.log('dateStrs: ', dateStrs);
+      console.log('dateMap: ', dateMap);
+      return {
+        dateMap,
+        dateStrs,
+      };
+    },
+    timeFormat(params) {
+      let defaultParams = {
+        time: new Date(),
+        type: 'all',
+        beforeSeparator: '-',
+        afterSeparator: '-',
+      };
+
+      if (this.isObject(params)) {
+        Object.assign(defaultParams, params);
+      }
+
+      let year = defaultParams.time.getFullYear();
+      let month = defaultParams.time.getMonth() + 1;
+      month = month < 10 ? '0' + month : month;
+      let day = defaultParams.time.getDate();
+      day = day < 10 ? '0' + day : day;
+      if (defaultParams.type === 'YMD') {
+        return `${year}${defaultParams.beforeSeparator}${month}${defaultParams.beforeSeparator}${day}`;
+      }
+      let hour = defaultParams.time.getHours();
+      hour = hour < 10 ? '0' + hour : hour;
+      let minute = defaultParams.time.getMinutes();
+      minute = minute < 10 ? '0' + minute : minute;
+      let second = defaultParams.time.getSeconds();
+      second = second < 10 ? '0' + second : second;
+      return `${year}${defaultParams.beforeSeparator}${month}${defaultParams.beforeSeparator}${day} ${hour}${defaultParams.afterSeparator}${minute}${defaultParams.afterSeparator}${second}`;
+    },
+    // add(arg1, arg2) {
+    //   let r1;
+    //   let r2;
+    //   let m;
+    //   try {
+    //     r1 = arg1.toString().split('.')[1].length;
+    //   } catch (e) {
+    //     r1 = 0;
+    //   }
+    //   try {
+    //     r2 = arg2.toString().split('.')[1].length;
+    //   } catch (e) {
+    //     r2 = 0;
+    //   }
+    //   m = Math.pow(10, Math.max(r1, r2));
+    //   return (Math.round(arg1 * m) + Math.round(arg2 * m)) / m;
+    // },
+    // mul(arg1, arg2) { // 乘
+    //   let m = 0;
+    //   let s1 = arg1.toString();
+    //   let s2 = arg2.toString();
+    //   try {
+    //     m += s1.split('.')[1].length;
+    //   } catch (e) {
+    //     //
+    //   }
+    //   try {
+    //     m += s2.split('.')[1].length;
+    //   } catch (e) {
+    //     //
+    //   }
+    //   return Number(s1.replace('.', '')) * Number(s2.replace('.', '')) / Math.pow(10, m);
+    // },
+    // sub(arg1, arg2) { // 减
+    //   let r1;
+    //   let r2;
+    //   let m;
+    //   let n;
+    //   try {
+    //     r1 = arg1.toString().split('.')[1].length;
+    //   } catch (e) {
+    //     r1 = 0;
+    //   }
+    //   try {
+    //     r2 = arg2.toString().split('.')[1].length;
+    //   } catch (e) {
+    //     r2 = 0;
+    //   }
+    //   m = Math.pow(10, Math.max(r1, r2));
+    //   n = (r1 >= r2) ? r1 : r2;
+    //   return this.toFixed(((arg1 * m - arg2 * m) / m), n);
+    // },
+  };
+  console.log(util.timeRangeAllDate(4));
+  console.log('===================');
+  let time1 = new Date();
+  let time2 = new Date();
+  time2.setDate(time2.getDate() + 4);
+  console.log(time1);
+  console.log(time2);
+  console.log(util.timeRangeAllDate(time1, time2));
+  </script>
+</body>
+
+</html>
