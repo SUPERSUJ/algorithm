@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+    <span>判断鼠标进入element的方向</span>
+    <p>
+      <span>aaaaaaaaaaaaaaaaaaaaaaaaaa</span>
+      <span>bb</span>
+    </p>
+    <div class="box" style="width: 500px; height: 500px; background-color: yellow;margin: 50px; padding: 50px; background-clip: contenx-box; border: 50px solid black;"></div>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+    <script type="text/javascript">
+      let box = document.getElementsByClassName('box')[0];
+      // box.addEventListener('mouseenter', function(e) {
+      //   console.log('mouseenter');
+      //   // mouseenter 进入border触发
+      // });
+      console.log(getComputedStyle(box).width); // 500px
+      console.log(box.clientWidth); //600 整数
+      console.log(typeof getComputedStyle(box).height); // string
+      let boxRect = box.getBoundingClientRect();
+      // getBoundingClientRect 是从border算起
+      console.log(boxRect.right - boxRect.left); // 700 包括border padding
+      let span = document.getElementsByTagName('span')[0];
+      console.log(span.clientWidth);  //0  内联元素clientWidth为0 // 属性表示元素的内部宽度，以像素计。该属性包括内边距，但不包括垂直滚动条（如果有）、边框和外边距
+      // 此外，clientWidth并getBoundingClientRect用于不同的目的，可能会返回不同的值。后者还会考虑变换并返回实际渲染时元素的尺寸。
+      // .class {
+      //   transform: scale(0.5);
+      // }
+      // 如果clientWidth在这种情况下返回1000，则宽度getBoundingClientRect将为500。
+      console.log(getComputedStyle(span).width); // auto
+      let spanRect = span.getBoundingClientRect();
+      console.log(spanRect);
+      // {
+      //   bottom: 28.666667938232422
+      //   height: 20.666667938232422
+      //   left: 8
+      //   right: 214.30209350585938
+      //   top: 8
+      //   width: 206.30209350585938 // width和height 不是什么浏览器都有属性, width包括border和padding
+      //   x: 8
+      //   y: 8
+      // }
+      // 属性值是数字
+      console.log(spanRect.right - spanRect.left); // 206.302...
+      let spanRects = span.getClientRects(); // 返回的是类数组
+      console.log(Array.from(spanRects));
+      // [{
+      //   bottom: 28.666667938232422,
+      //   height: 20.666667938232422,
+      //   left: 8,
+      //   right: 214.30209350585938,
+      //   top: 8,
+      //   width: 206.30209350585938,
+      //   x: 8,
+      //   y: 8,
+      // }]
+      
+      let p = document.getElementsByTagName('p')[0];
+      console.log(p);
+      let pRects = p.getClientRects();
+      console.log(Array.from(pRects));
+      
+
+      function getOffset(target) {
+        let left = target.offsetLeft;
+        let top = target.offsetTop;
+        let parent = target.offsetParent;
+        while (parent) {
+          left += parent.offsetLeft;
+          top += parent.offsetTop;
+          parent = parent.offsetParent;
+        }
+        return {
+          left,
+          top,
+        };
+      }
+      
+      function getWidth(target) {
+        // let rect = target.getBoundingClientRect();
+        // return rect.right - rect.left;
+        // return target.clientWidth;
+        return Math.floor(parseFloat(getComputedStyle(target).width) || 0);
+      }
+
+      function getHeight(target) {
+        // let rect = target.getBoundingClientRect();
+        // return rect.bottom = rect.top;
+        return Math.floor(parseFloat(getComputedStyle(target).height) || 0);
+      }
+
+      box.addEventListener('mouseenter', function(e) {
+        let target = e.target;
+        console.log(target.getBoundingClientRect());
+        let w = getWidth(target);
+        let h = getHeight(target);
+        let { left, top } = getOffset(target);
+        // let { left, top } = $(e.target).offset();
+        // console.log(e.clientX); // 数字 e.clientX === e.x  鼠标指针在点击元素（DOM）中的X坐标。
+        // console.log(e.pageX); // 数字
+        console.log(w);
+        console.log(h);
+        console.log(e.x);
+        console.log(e.y);
+        console.log(left);
+        console.log(top);
+        let x = (e.x - left - (w / 2)) * ((w > h) ? (h / w) : 1);
+        let y = (e.y - top - (h / 2)) * ((h > w) ? (w / h) : 1);
+        console.log('x: ', x);
+        console.log('y: ', y);
+
+        // 上：0，右：1，下：2，左：3
+        console.log(Math.round((((Math.atan2(y,x) * (180/Math.PI)) + 180)) / 90 + 3) % 4);
+        console.log(determineDirection($(e.target), e));
+
+
+
+        console.log('方法2：', determineDirection2(e));
+      })
+
+      function determineDirection($el, pos){
+        var w = $el.width(),
+          h = $el.height(),
+          x = (pos.x - $el.offset().left - (w/2)) * (w > h ? (h/w) : 1),
+          y = (pos.y - $el.offset().top  - (h/2)) * (h > w ? (w/h) : 1);
+        console.log('jquery w:', w);
+        console.log('jquery h:', h);
+        console.log(pos.x);
+        console.log(pos.y);
+        console.log($el.offset().left);
+        console.log($el.offset().top);
+        console.log('x: ', x);
+        console.log('y: ', y);
+        return Math.round((((Math.atan2(y,x) * (180/Math.PI)) + 180)) / 90 + 3) % 4;
+      }
+
+
+      function determineDirection2(e) {
+        let target = e.target;
+        let x = e.clientX;
+        let y = e.clientY;
+        let scrollTop = getScrollTop();
+        let scrollLeft = getScrollLeft();
+        let offset = getOffset(target);
+        let elemX = offset.left;
+        let elemY = offset.top;
+        let diffX = x - (elemX - scrollTop);
+        let diffY = y - (elemY - scrollLeft);
+        let w = getWidth(target);
+        let h = getHeight(target);
+
+        let topEdgeDist = distMetric(diffX, diffY, w / 2, 0);
+        let bottomEdgeDist = distMetric(diffX, diffY, w / 2, h);
+        let leftEdgeDist = distMetric(diffX, diffY, 0, h / 2);
+        let rightEdgeDist = distMetric(diffX, diffY, w, h / 2);
+        let min = Math.min(topEdgeDist, bottomEdgeDist, leftEdgeDist, rightEdgeDist);
+        switch(min) {
+          case leftEdgeDist: return 3;
+          case rightEdgeDist: return 1;
+          case topEdgeDist: return 0;
+          case bottomEdgeDist: return 2;
+        }
+      }
+
+      function distMetric(x, y, x2, y2) {
+        let xDiff = x - x2;
+        let yDiff = y - y2;
+        return Math.pow(xDiff, 2) + Math.pow(yDiff, 2);
+      }
+
+      function getScrollTop() {
+        return window.pageYOffset || document.documentElement.scrollTop;
+      }
+      function getScrollLeft() {
+        return window.pageXOffset || document.documentElement.scrollLeft;
+      }
+    </script>
+	</body>
+</html>
