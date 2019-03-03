@@ -69,6 +69,14 @@
         let left = target.offsetLeft;
         let top = target.offsetTop;
         let parent = target.offsetParent;
+        // The offsetParent is the nearest ancestor that is:
+        // CSS-positioned (position is absolute, relative, fixed or sticky),
+        // or <td>, <th>, <table>,
+        // or <body>.
+        // 有几种情况offsetParent是null：
+        // 对于未显示的元素（display:none或不在文档中）。
+        // 为<body>和<html>。
+        // 对于元素position:fixed。
         while (parent) {
           left += parent.offsetLeft;
           top += parent.offsetTop;
@@ -93,7 +101,7 @@
         return Math.floor(parseFloat(getComputedStyle(target).height) || 0);
       }
 
-      box.addEventListener('mouseenter', function(e) {
+      box.addEventListener('mouseenter', function(e) { // mouseenter/mouseleave  不会冒泡  mouseover/mouseout 会冒泡
         let target = e.target;
         console.log(target.getBoundingClientRect());
         let w = getWidth(target);
@@ -120,7 +128,11 @@
 
 
         console.log('方法2：', determineDirection2(e));
-      })
+      });
+
+      box.addEventListener('mouseleave', function (e) {
+        console.log('leave direction: ', determineDirection2(e));
+      });
 
       function determineDirection($el, pos){
         var w = $el.width(),
