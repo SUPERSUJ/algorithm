@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+    <title></title>
+    <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    .demo:before {
+      content: '+';
+      color: green;
+      font-weight: bold;
+      font-size: 30px;
+    }
+    .demo.decr:before {
+      content: '-';
+      color: red;
+      font-weight: bold;
+      font-size: 30px;
+    }
+    </style>
+	</head>
+
+	<body>
+		<p class="demo">修改:before和:after样式</p>
+		<script type="text/javascript">
+      let demo = document.getElementsByClassName('demo')[0];
+      demo.onclick = function() {
+        console.log(this.classList);
+        this.classList.toggle('decr');
+        console.log(window.getComputedStyle(this, ':before').getPropertyValue('content'));
+      }
+		</script>
+	</body>
+
+</html>
